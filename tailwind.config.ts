@@ -61,7 +61,19 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Circuit Design Colors
+				'neon-green': {
+					DEFAULT: 'hsl(var(--neon-green))',
+					bright: 'hsl(var(--neon-green-bright))',
+					dim: 'hsl(var(--neon-green-dim))',
+					glow: 'hsl(var(--neon-green-glow))'
+				},
+				'grid-color': 'hsl(var(--grid-color))',
+				'grid-major': 'hsl(var(--grid-major))',
+				'component-bg': 'hsl(var(--component-bg))',
+				'component-border': 'hsl(var(--component-border))',
+				'wire-color': 'hsl(var(--wire-color))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
