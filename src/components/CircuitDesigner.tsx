@@ -4,24 +4,27 @@ import { CircuitCanvas } from './CircuitCanvas';
 import { ComponentPalette } from './ComponentPalette';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Trash2, Save, FolderOpen, Zap } from 'lucide-react';
+import { Trash2, Save, FolderOpen, Zap, Menu, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 
 interface Component {
   id: string;
   label: string;
-  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground';
-  category: 'passive' | 'active' | 'power' | 'logic';
+  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna';
+  category: 'passive' | 'active' | 'power' | 'logic' | 'sensors' | 'output' | 'mechanical';
+  description?: string;
 }
 
 export function CircuitDesigner() {
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { toast } = useToast();
 
   const handleNodesChange = useCallback((newNodes: Node[]) => {
     setNodes(newNodes);
   }, []);
-  const { toast } = useToast();
 
   const handleSelectComponent = useCallback((component: Component) => {
     setSelectedComponent(component);
@@ -78,61 +81,70 @@ export function CircuitDesigner() {
   }, [nodes, toast]);
 
   return (
-    <div className="h-screen flex flex-col bg-background">
-      {/* Header */}
-      <Card className="border-b border-border rounded-none">
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-2">
-            <Zap className="w-6 h-6 text-neon-green" />
-            <h1 className="text-xl font-bold text-foreground">Circuit Designer</h1>
+    <SidebarProvider>
+      <div className="h-screen flex flex-col bg-background w-full">
+        {/* Header */}
+        <Card className="border-b border-border rounded-none">
+          <div className="flex items-center justify-between p-4">
+            <div className="flex items-center space-x-4">
+              <SidebarTrigger className="text-neon-green hover:text-neon-green-bright">
+                <Menu className="w-5 h-5" />
+              </SidebarTrigger>
+              <div className="flex items-center space-x-2">
+                <Zap className="w-6 h-6 text-neon-green" />
+                <h1 className="text-xl font-bold text-foreground">Circuit Designer</h1>
+              </div>
+            </div>
+            
+            <div className="flex items-center space-x-2">
+              <Button variant="outline" size="sm" onClick={handleClearCanvas}>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Clear
+              </Button>
+              <Button variant="outline" size="sm">
+                <FolderOpen className="w-4 h-4 mr-2" />
+                Open
+              </Button>
+              <Button variant="default" size="sm" onClick={handleSaveCircuit}>
+                <Save className="w-4 h-4 mr-2" />
+                Save
+              </Button>
+            </div>
           </div>
-          
-          <div className="flex items-center space-x-2">
-            <Button variant="outline" size="sm" onClick={handleClearCanvas}>
-              <Trash2 className="w-4 h-4 mr-2" />
-              Clear
-            </Button>
-            <Button variant="outline" size="sm">
-              <FolderOpen className="w-4 h-4 mr-2" />
-              Open
-            </Button>
-            <Button variant="default" size="sm" onClick={handleSaveCircuit}>
-              <Save className="w-4 h-4 mr-2" />
-              Save
-            </Button>
-          </div>
-        </div>
-      </Card>
+        </Card>
 
-      {/* Main Content */}
-      <div className="flex flex-1 overflow-hidden">
-        <ComponentPalette 
-          onSelectComponent={handleSelectComponent}
-          selectedComponent={selectedComponent}
-        />
-        <CircuitCanvas 
-          onAddComponent={handleAddComponent}
-          nodes={nodes}
-          onNodesChange={handleNodesChange}
-        />
+        {/* Main Content */}
+        <div className="flex flex-1 overflow-hidden w-full">
+          <ComponentPalette 
+            onSelectComponent={handleSelectComponent}
+            selectedComponent={selectedComponent}
+          />
+          <main className="flex-1">
+            <CircuitCanvas 
+              onAddComponent={handleAddComponent}
+              nodes={nodes}
+              onNodesChange={handleNodesChange}
+            />
+          </main>
+        </div>
+
+        {/* Status Bar */}
+        <Card className="border-t border-border rounded-none">
+          <div className="flex items-center justify-between p-2 text-sm text-muted-foreground">
+            <div className="flex items-center space-x-4">
+              <span>Components: {nodes.length}</span>
+              {selectedComponent && (
+                <span className="text-neon-green">
+                  Selected: {selectedComponent.label}
+                </span>
+              )}
+            </div>
+            <div>
+              Click components panel to browse • Select component then click canvas to place
+            </div>
+          </div>
+        </Card>
       </div>
-
-      {/* Status Bar */}
-      <Card className="border-t border-border rounded-none">
-        <div className="flex items-center justify-between p-2 text-sm text-muted-foreground">
-          <div className="flex items-center space-x-4">
-            <span>Components: {nodes.length}</span>
-            {selectedComponent && (
-              <span className="text-neon-green">
-                Selected: {selectedComponent.label}
-              </span>
-            )}
-          </div>
-          <div>
-            Ready - Click components to select, then click canvas to place
-          </div>
-        </div>
-      </Card>
-    </div>
+    </SidebarProvider>
   );
 }

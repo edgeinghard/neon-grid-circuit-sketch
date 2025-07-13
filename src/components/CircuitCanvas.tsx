@@ -87,7 +87,7 @@ export function CircuitCanvas({ onAddComponent, nodes: externalNodes, onNodesCha
         deleteKeyCode={["Backspace", "Delete"]}
       >
         <Background 
-          variant={BackgroundVariant.Dots} 
+          variant={BackgroundVariant.Lines} 
           gap={20} 
           size={1}
           color="hsl(var(--grid-color))"
