@@ -1,5 +1,6 @@
 import React from 'react';
 import { Card } from '@/components/ui/card';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import {
   Sidebar,
   SidebarContent,
@@ -10,6 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 interface Component {
   id: string;
@@ -63,6 +65,22 @@ interface ComponentPaletteProps {
 }
 
 export function ComponentPalette({ onSelectComponent, selectedComponent }: ComponentPaletteProps) {
+  const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({
+    passive: true,
+    active: false,
+    logic: false,
+    power: false,
+    sensors: false,
+    output: false,
+    mechanical: false,
+  });
+
+  const toggleSection = (section: string) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
   const categories = {
     passive: { name: 'Passive Components', components: components.filter(c => c.category === 'passive') },
     active: { name: 'Active Components', components: components.filter(c => c.category === 'active') },
@@ -101,6 +119,11 @@ export function ComponentPalette({ onSelectComponent, selectedComponent }: Compo
     }
   };
 
+  const handleDragStart = (event: React.DragEvent, component: Component) => {
+    event.dataTransfer.setData('application/json', JSON.stringify(component));
+    event.dataTransfer.effectAllowed = 'copy';
+    onSelectComponent(component);
+  };
   return (
     <Sidebar className="border-r border-border">
       <SidebarContent className="p-4">
@@ -110,21 +133,31 @@ export function ComponentPalette({ onSelectComponent, selectedComponent }: Compo
         </div>
         
         {Object.entries(categories).map(([key, category]) => (
-          <SidebarGroup key={key} className="mb-4">{/* defaultOpen={key === 'passive'} */}
-            <SidebarGroupLabel className="text-sm font-semibold text-foreground uppercase tracking-wide">
-              {category.name}
-            </SidebarGroupLabel>
-            <SidebarGroupContent>
+          <Collapsible key={key} open={openSections[key]} onOpenChange={() => toggleSection(key)}>
+            <CollapsibleTrigger className="w-full">
+              <SidebarGroupLabel className="text-sm font-semibold text-foreground uppercase tracking-wide flex items-center justify-between hover:text-neon-green transition-colors cursor-pointer">
+                <span>{category.name}</span>
+                {openSections[key] ? (
+                  <ChevronDown className="w-4 h-4" />
+                ) : (
+                  <ChevronRight className="w-4 h-4" />
+                )}
+              </SidebarGroupLabel>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <SidebarGroupContent className="mt-2">
               <SidebarMenu>
                 {category.components.map((component) => (
                   <SidebarMenuItem key={component.id}>
                     <SidebarMenuButton
                       onClick={() => onSelectComponent(component)}
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, component)}
                       className={`w-full justify-start transition-all duration-200 hover:shadow-[var(--shadow-neon)] ${
                         selectedComponent?.id === component.id
                           ? 'border-neon-green bg-accent text-neon-green'
                           : 'hover:border-neon-green-dim hover:bg-accent/50'
-                      }`}
+                      } cursor-grab active:cursor-grabbing`}
                       asChild
                     >
                       <div className="p-3 border border-component-border rounded-lg">
@@ -144,8 +177,9 @@ export function ComponentPalette({ onSelectComponent, selectedComponent }: Compo
                   </SidebarMenuItem>
                 ))}
               </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
+              </SidebarGroupContent>
+            </CollapsibleContent>
+          </Collapsible>
         ))}
       </SidebarContent>
     </Sidebar>

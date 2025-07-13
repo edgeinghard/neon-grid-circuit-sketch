@@ -57,6 +57,45 @@ export function CircuitDesigner() {
     });
   }, [selectedComponent, toast]);
 
+  const handleCanvasDrop = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    const componentData = event.dataTransfer.getData('application/json');
+    if (!componentData) return;
+
+    try {
+      const component = JSON.parse(componentData) as Component;
+      const canvasRect = event.currentTarget.getBoundingClientRect();
+      const position = {
+        x: event.clientX - canvasRect.left - 50,
+        y: event.clientY - canvasRect.top - 50,
+      };
+
+      const newNode: Node = {
+        id: `${component.type}-${Date.now()}`,
+        type: 'component',
+        position,
+        data: {
+          label: component.label,
+          type: component.type,
+          value: component.type === 'resistor' ? '1kΩ' : undefined,
+        },
+      };
+
+      setNodes(prev => [...prev, newNode]);
+      
+      toast({
+        title: "Component Added",
+        description: `${component.label} added to circuit.`,
+      });
+    } catch (error) {
+      console.error('Error parsing dropped component:', error);
+    }
+  }, [toast]);
+
+  const handleCanvasDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  }, []);
   const handleClearCanvas = useCallback(() => {
     setNodes([]);
     toast({
@@ -119,7 +158,11 @@ export function CircuitDesigner() {
             onSelectComponent={handleSelectComponent}
             selectedComponent={selectedComponent}
           />
-          <main className="flex-1">
+          <main 
+            className="flex-1"
+            onDrop={handleCanvasDrop}
+            onDragOver={handleCanvasDragOver}
+          >
             <CircuitCanvas 
               onAddComponent={handleAddComponent}
               nodes={nodes}
@@ -140,7 +183,7 @@ export function CircuitDesigner() {
               )}
             </div>
             <div>
-              Click components panel to browse • Select component then click canvas to place
+              Drag & drop components or click to select then place on canvas
             </div>
           </div>
         </Card>

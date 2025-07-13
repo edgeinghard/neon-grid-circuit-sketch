@@ -71,7 +71,7 @@ export function CircuitCanvas({ onAddComponent, nodes: externalNodes, onNodesCha
   );
 
   return (
-    <div className="flex-1 h-full bg-background relative">
+    <div className="flex-1 h-full bg-background relative circuit-canvas-container">
       <ReactFlow
         nodes={nodes}
         edges={edges}
@@ -85,6 +85,14 @@ export function CircuitCanvas({ onAddComponent, nodes: externalNodes, onNodesCha
         className="circuit-canvas"
         onClick={onCanvasClick}
         deleteKeyCode={["Backspace", "Delete"]}
+        nodesDraggable={true}
+        nodesConnectable={true}
+        elementsSelectable={true}
+        selectNodesOnDrag={false}
+        panOnDrag={true}
+        zoomOnScroll={true}
+        zoomOnPinch={true}
+        zoomOnDoubleClick={false}
       >
         <Background 
           variant={BackgroundVariant.Lines} 
