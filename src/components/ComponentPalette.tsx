@@ -16,8 +16,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/component
 interface Component {
   id: string;
   label: string;
-  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna';
-  category: 'passive' | 'active' | 'power' | 'logic' | 'sensors' | 'output' | 'mechanical';
+  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna' | 'and' | 'or' | 'not' | 'nand' | 'nor' | 'xor' | 'xnor' | 'buffer';
+  category: 'passive' | 'active' | 'power' | 'logic' | 'sensors' | 'output' | 'mechanical' | 'gates';
   description?: string;
 }
 
@@ -41,6 +41,16 @@ const components: Component[] = [
   { id: 'timer', label: '555 Timer', type: 'timer', category: 'logic', description: 'Versatile timer IC' },
   { id: 'switch', label: 'Switch', type: 'switch', category: 'logic', description: 'Manual control' },
   
+  // Logic Gates
+  { id: 'and', label: 'AND Gate', type: 'and', category: 'gates', description: 'Logical AND operation' },
+  { id: 'or', label: 'OR Gate', type: 'or', category: 'gates', description: 'Logical OR operation' },
+  { id: 'not', label: 'NOT Gate', type: 'not', category: 'gates', description: 'Logical NOT operation' },
+  { id: 'nand', label: 'NAND Gate', type: 'nand', category: 'gates', description: 'Logical NAND operation' },
+  { id: 'nor', label: 'NOR Gate', type: 'nor', category: 'gates', description: 'Logical NOR operation' },
+  { id: 'xor', label: 'XOR Gate', type: 'xor', category: 'gates', description: 'Logical XOR operation' },
+  { id: 'xnor', label: 'XNOR Gate', type: 'xnor', category: 'gates', description: 'Logical XNOR operation' },
+  { id: 'buffer', label: 'Buffer', type: 'buffer', category: 'gates', description: 'Signal buffer' },
+  
   // Power Components
   { id: 'battery', label: 'Battery', type: 'battery', category: 'power', description: 'DC power source' },
   { id: 'ground', label: 'Ground', type: 'ground', category: 'power', description: 'Reference point' },
@@ -62,12 +72,15 @@ const components: Component[] = [
 interface ComponentPaletteProps {
   onSelectComponent: (component: Component) => void;
   selectedComponent: Component | null;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 }
 
-export function ComponentPalette({ onSelectComponent, selectedComponent }: ComponentPaletteProps) {
+export function ComponentPalette({ onSelectComponent, selectedComponent, isCollapsed, onToggleCollapse }: ComponentPaletteProps) {
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>({
     passive: true,
     active: false,
+    gates: false,
     logic: false,
     power: false,
     sensors: false,
@@ -81,9 +94,11 @@ export function ComponentPalette({ onSelectComponent, selectedComponent }: Compo
       [section]: !prev[section]
     }));
   };
+
   const categories = {
     passive: { name: 'Passive Components', components: components.filter(c => c.category === 'passive') },
     active: { name: 'Active Components', components: components.filter(c => c.category === 'active') },
+    gates: { name: 'Logic Gates', components: components.filter(c => c.category === 'gates') },
     logic: { name: 'Logic & Timers', components: components.filter(c => c.category === 'logic') },
     power: { name: 'Power & Reference', components: components.filter(c => c.category === 'power') },
     sensors: { name: 'Sensors', components: components.filter(c => c.category === 'sensors') },
@@ -191,6 +206,87 @@ export function ComponentPalette({ onSelectComponent, selectedComponent }: Compo
             <circle cx="4" cy="4" r="1" className="fill-current" />
             <circle cx="12" cy="4" r="1" className="fill-current" />
             <path d="M5 4 L11 1" />
+          </svg>
+        );
+      // Logic Gates
+      case 'and':
+        return (
+          <svg width="20" height="14" viewBox="0 0 20 14" className="stroke-current fill-none stroke-1">
+            <path d="M2 2 L10 2 A5 5 0 0 1 10 12 L2 12 Z" />
+            <path d="M0 4 L2 4" />
+            <path d="M0 10 L2 10" />
+            <path d="M15 7 L20 7" />
+          </svg>
+        );
+      case 'or':
+        return (
+          <svg width="20" height="14" viewBox="0 0 20 14" className="stroke-current fill-none stroke-1">
+            <path d="M2 2 Q6 2 8 7 Q6 12 2 12 Q4 7 2 2" />
+            <path d="M8 2 Q12 2 15 7 Q12 12 8 12" />
+            <path d="M0 4 L3 4" />
+            <path d="M0 10 L3 10" />
+            <path d="M15 7 L20 7" />
+          </svg>
+        );
+      case 'not':
+        return (
+          <svg width="18" height="12" viewBox="0 0 18 12" className="stroke-current fill-none stroke-1">
+            <path d="M2 2 L2 10 L12 6 Z" />
+            <circle cx="14" cy="6" r="1.5" />
+            <path d="M0 6 L2 6" />
+            <path d="M15.5 6 L18 6" />
+          </svg>
+        );
+      case 'nand':
+        return (
+          <svg width="22" height="14" viewBox="0 0 22 14" className="stroke-current fill-none stroke-1">
+            <path d="M2 2 L10 2 A5 5 0 0 1 10 12 L2 12 Z" />
+            <circle cx="16" cy="7" r="1.5" />
+            <path d="M0 4 L2 4" />
+            <path d="M0 10 L2 10" />
+            <path d="M17.5 7 L22 7" />
+          </svg>
+        );
+      case 'nor':
+        return (
+          <svg width="22" height="14" viewBox="0 0 22 14" className="stroke-current fill-none stroke-1">
+            <path d="M2 2 Q6 2 8 7 Q6 12 2 12 Q4 7 2 2" />
+            <path d="M8 2 Q12 2 15 7 Q12 12 8 12" />
+            <circle cx="16.5" cy="7" r="1.5" />
+            <path d="M0 4 L3 4" />
+            <path d="M0 10 L3 10" />
+            <path d="M18 7 L22 7" />
+          </svg>
+        );
+      case 'xor':
+        return (
+          <svg width="22" height="14" viewBox="0 0 22 14" className="stroke-current fill-none stroke-1">
+            <path d="M1 2 Q3 7 1 12" />
+            <path d="M3 2 Q7 2 9 7 Q7 12 3 12 Q5 7 3 2" />
+            <path d="M9 2 Q13 2 16 7 Q13 12 9 12" />
+            <path d="M0 4 L4 4" />
+            <path d="M0 10 L4 10" />
+            <path d="M16 7 L22 7" />
+          </svg>
+        );
+      case 'xnor':
+        return (
+          <svg width="24" height="14" viewBox="0 0 24 14" className="stroke-current fill-none stroke-1">
+            <path d="M1 2 Q3 7 1 12" />
+            <path d="M3 2 Q7 2 9 7 Q7 12 3 12 Q5 7 3 2" />
+            <path d="M9 2 Q13 2 16 7 Q13 12 9 12" />
+            <circle cx="17.5" cy="7" r="1.5" />
+            <path d="M0 4 L4 4" />
+            <path d="M0 10 L4 10" />
+            <path d="M19 7 L24 7" />
+          </svg>
+        );
+      case 'buffer':
+        return (
+          <svg width="16" height="12" viewBox="0 0 16 12" className="stroke-current fill-none stroke-1">
+            <path d="M2 2 L2 10 L12 6 Z" />
+            <path d="M0 6 L2 6" />
+            <path d="M12 6 L16 6" />
           </svg>
         );
       case 'battery': 
@@ -301,6 +397,11 @@ export function ComponentPalette({ onSelectComponent, selectedComponent }: Compo
     event.dataTransfer.effectAllowed = 'copy';
     onSelectComponent(component);
   };
+
+  if (isCollapsed) {
+    return null;
+  }
+
   return (
     <Sidebar className="border-r border-border">
       <SidebarContent className="p-4">

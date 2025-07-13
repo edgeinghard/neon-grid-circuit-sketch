@@ -3,7 +3,7 @@ import { Handle, Position, NodeProps } from '@xyflow/react';
 
 interface ComponentData {
   label: string;
-  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna';
+  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna' | 'and' | 'or' | 'not' | 'nand' | 'nor' | 'xor' | 'xnor' | 'buffer';
   value?: string;
 }
 
@@ -274,6 +274,103 @@ export function ComponentNode({ data }: NodeProps) {
               <path d="M12 20 L4 16" />
               <path d="M12 20 L20 16" />
               <circle cx="12" cy="20" r="2" className="fill-foreground" />
+            </svg>
+          </div>
+        );
+      // Logic Gates
+      case 'and':
+        return (
+          <div className="w-20 h-14 flex items-center justify-center bg-component-bg">
+            <svg width="60" height="40" viewBox="0 0 60 40" className="stroke-foreground fill-none stroke-2">
+              <path d="M5 5 L25 5 A15 15 0 0 1 25 35 L5 35 Z" />
+              <path d="M0 12 L5 12" />
+              <path d="M0 28 L5 28" />
+              <path d="M40 20 L60 20" />
+            </svg>
+          </div>
+        );
+      case 'or':
+        return (
+          <div className="w-20 h-14 flex items-center justify-center bg-component-bg">
+            <svg width="60" height="40" viewBox="0 0 60 40" className="stroke-foreground fill-none stroke-2">
+              <path d="M5 5 Q15 5 20 20 Q15 35 5 35 Q10 20 5 5" />
+              <path d="M20 5 Q30 5 40 20 Q30 35 20 35" />
+              <path d="M0 12 L8 12" />
+              <path d="M0 28 L8 28" />
+              <path d="M40 20 L60 20" />
+            </svg>
+          </div>
+        );
+      case 'not':
+        return (
+          <div className="w-18 h-12 flex items-center justify-center bg-component-bg">
+            <svg width="54" height="36" viewBox="0 0 54 36" className="stroke-foreground fill-none stroke-2">
+              <path d="M5 5 L5 31 L35 18 Z" />
+              <circle cx="41" cy="18" r="4" />
+              <path d="M0 18 L5 18" />
+              <path d="M45 18 L54 18" />
+            </svg>
+          </div>
+        );
+      case 'nand':
+        return (
+          <div className="w-22 h-14 flex items-center justify-center bg-component-bg">
+            <svg width="66" height="40" viewBox="0 0 66 40" className="stroke-foreground fill-none stroke-2">
+              <path d="M5 5 L25 5 A15 15 0 0 1 25 35 L5 35 Z" />
+              <circle cx="46" cy="20" r="4" />
+              <path d="M0 12 L5 12" />
+              <path d="M0 28 L5 28" />
+              <path d="M50 20 L66 20" />
+            </svg>
+          </div>
+        );
+      case 'nor':
+        return (
+          <div className="w-22 h-14 flex items-center justify-center bg-component-bg">
+            <svg width="66" height="40" viewBox="0 0 66 40" className="stroke-foreground fill-none stroke-2">
+              <path d="M5 5 Q15 5 20 20 Q15 35 5 35 Q10 20 5 5" />
+              <path d="M20 5 Q30 5 40 20 Q30 35 20 35" />
+              <circle cx="46" cy="20" r="4" />
+              <path d="M0 12 L8 12" />
+              <path d="M0 28 L8 28" />
+              <path d="M50 20 L66 20" />
+            </svg>
+          </div>
+        );
+      case 'xor':
+        return (
+          <div className="w-22 h-14 flex items-center justify-center bg-component-bg">
+            <svg width="66" height="40" viewBox="0 0 66 40" className="stroke-foreground fill-none stroke-2">
+              <path d="M2 5 Q6 20 2 35" />
+              <path d="M8 5 Q18 5 23 20 Q18 35 8 35 Q13 20 8 5" />
+              <path d="M23 5 Q33 5 43 20 Q33 35 23 35" />
+              <path d="M0 12 L11 12" />
+              <path d="M0 28 L11 28" />
+              <path d="M43 20 L66 20" />
+            </svg>
+          </div>
+        );
+      case 'xnor':
+        return (
+          <div className="w-24 h-14 flex items-center justify-center bg-component-bg">
+            <svg width="72" height="40" viewBox="0 0 72 40" className="stroke-foreground fill-none stroke-2">
+              <path d="M2 5 Q6 20 2 35" />
+              <path d="M8 5 Q18 5 23 20 Q18 35 8 35 Q13 20 8 5" />
+              <path d="M23 5 Q33 5 43 20 Q33 35 23 35" />
+              <circle cx="49" cy="20" r="4" />
+              <path d="M0 12 L11 12" />
+              <path d="M0 28 L11 28" />
+              <path d="M53 20 L72 20" />
+            </svg>
+          </div>
+        );
+      case 'buffer':
+        return (
+          <div className="w-16 h-12 flex items-center justify-center bg-component-bg">
+            <svg width="48" height="36" viewBox="0 0 48 36" className="stroke-foreground fill-none stroke-2">
+              <path d="M5 5 L5 31 L35 18 Z" />
+              <path d="M0 18 L5 18" />
+              <path d="M35 18 L48 18" />
             </svg>
           </div>
         );

@@ -11,15 +11,15 @@ import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 interface Component {
   id: string;
   label: string;
-  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna';
-  category: 'passive' | 'active' | 'power' | 'logic' | 'sensors' | 'output' | 'mechanical';
+  type: 'resistor' | 'capacitor' | 'inductor' | 'diode' | 'transistor' | 'ic' | 'timer' | 'switch' | 'battery' | 'ground' | 'led' | 'speaker' | 'microphone' | 'motor' | 'relay' | 'fuse' | 'crystal' | 'potentiometer' | 'photodiode' | 'thermistor' | 'buzzer' | 'antenna' | 'and' | 'or' | 'not' | 'nand' | 'nor' | 'xor' | 'xnor' | 'buffer';
+  category: 'passive' | 'active' | 'power' | 'logic' | 'sensors' | 'output' | 'mechanical' | 'gates';
   description?: string;
 }
 
 export function CircuitDesigner() {
   const [selectedComponent, setSelectedComponent] = useState<Component | null>(null);
   const [nodes, setNodes] = useState<Node[]>([]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const { toast } = useToast();
 
   const handleNodesChange = useCallback((newNodes: Node[]) => {
@@ -126,9 +126,12 @@ export function CircuitDesigner() {
         <Card className="border-b border-border rounded-none">
           <div className="flex items-center justify-between p-4">
             <div className="flex items-center space-x-4">
-              <SidebarTrigger className="text-neon-green hover:text-neon-green-bright">
-                <Menu className="w-5 h-5" />
-              </SidebarTrigger>
+              <button 
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="p-2 text-neon-green hover:text-neon-green-bright transition-colors rounded-md hover:bg-accent"
+              >
+                {sidebarCollapsed ? <Menu className="w-5 h-5" /> : <X className="w-5 h-5" />}
+              </button>
               <div className="flex items-center space-x-2">
                 <Zap className="w-6 h-6 text-neon-green" />
                 <h1 className="text-xl font-bold text-foreground">Circuit Designer</h1>
@@ -157,6 +160,8 @@ export function CircuitDesigner() {
           <ComponentPalette 
             onSelectComponent={handleSelectComponent}
             selectedComponent={selectedComponent}
+            isCollapsed={sidebarCollapsed}
+            onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
           />
           <main 
             className="flex-1"
@@ -183,7 +188,7 @@ export function CircuitDesigner() {
               )}
             </div>
             <div>
-              Drag & drop components or click to select then place on canvas
+              {sidebarCollapsed ? 'Click menu to show components' : 'Drag & drop components or click to select then place on canvas'}
             </div>
           </div>
         </Card>
